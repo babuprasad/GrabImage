@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.httpclient.HttpException;
@@ -54,13 +55,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 	private FrameLayout preview;
 	private TextView logs;
 	private TextView objectTitle;
-	private LinearLayout objectDetails;
+	private LinearLayout objectDetailsLayout;
 
 	final private String TAG = "GrabImage";
 	private String bmpPath = "";
 	private String result ="";
 	private ProcessImage processImage = new ProcessImage();
-	private ObjectDetails mObjectDetails = null;
+	private ObjectDetails mFirstObjectDetails = null;
+	private List<ObjectDetails> mObjectDetailsList = null;
 	private TextToSpeech textToSpeech = null;
 
 	public static Camera getCameraObject(){
@@ -109,14 +111,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 		logs = (TextView) findViewById(R.id.logs);
 		objectTitle = (TextView) findViewById(R.id.objectTitle);
 		cameraObject = getCameraObject();
-		objectDetails = (LinearLayout) findViewById(R.id.objectDetails);
-		objectDetails.setOnClickListener(new OnClickListener() {
+		objectDetailsLayout = (LinearLayout) findViewById(R.id.objectDetails);
+		objectDetailsLayout.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				if(mObjectDetails != null) {
+				if(mFirstObjectDetails != null) {
 					Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-					intent.putExtra("url", mObjectDetails.getObjectUrl());
+					intent.putExtra("url", mFirstObjectDetails.getObjectUrl());
 					startActivity(intent);
 				}
 			}
@@ -171,16 +173,31 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 										textToSpeech.speak(result, TextToSpeech.QUEUE_FLUSH, null);
 										addToLogs("Fetching product details...");
 										try {
-											ObjectRecognition objectDetails = new ObjectRecognition();
-											mObjectDetails = objectDetails.getObjectDetails(result);
-											Log.i(TAG, "Object Title: "+ mObjectDetails.getObjectTitle());
-											Log.i(TAG, "Object Image: "+ mObjectDetails.getObjectImage());
-											Log.i(TAG, "Object Url  : "+ mObjectDetails.getObjectUrl());
-											Log.i(TAG, "Relevant Url: " + mObjectDetails.getRelevantUrl());
-											URL url = new URL(mObjectDetails.getObjectImage());
-											Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-											updateObjectDetails(mObjectDetails.getObjectTitle(), image);
-											addToLogs("product details updated.");
+											//ObjectRecognition objr = new ObjectRecognition();
+											//mObjectDetailsList = objr.getObjectDetails(result);
+											
+											GoogleResponse googleRespose = new GoogleResponse();
+											mObjectDetailsList = googleRespose.getRelavantItems(result);
+											if(mObjectDetailsList != null) {
+												mFirstObjectDetails = mObjectDetailsList.get(0);
+												if(mFirstObjectDetails.getObjectImage() == "")
+													mFirstObjectDetails = mObjectDetailsList.get(1);
+												if(mFirstObjectDetails.getObjectImage() == "")
+													mFirstObjectDetails = mObjectDetailsList.get(2);
+												Log.i(TAG, "Object Title: "+ mFirstObjectDetails.getObjectTitle());
+												Log.i(TAG, "Object Image: "+ mFirstObjectDetails.getObjectImage());
+												Log.i(TAG, "Object Url  : "+ mFirstObjectDetails.getObjectUrl());
+												Log.i(TAG, "Relevant Url: " + mFirstObjectDetails.getRelevantUrl());
+												URL url = new URL(mFirstObjectDetails.getObjectImage());
+												Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+												updateObjectDetails(mFirstObjectDetails.getObjectTitle(), image);
+												addToLogs("product details updated.");
+											}
+											else
+											{
+												updateObjectDetails("No matching products found !", null);	
+												addToLogs("No matching products found !.");
+											}
 										} catch (Exception e) {
 											e.printStackTrace();
 										}

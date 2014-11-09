@@ -33,23 +33,26 @@
 
         <Button
             android:id="@+id/start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:layout_margin="3dp"
+            android:background="@drawable/buttonstyle"
             android:text="Start" />
 
         <Button
             android:id="@+id/capture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:layout_margin="3dp"
+            android:background="@drawable/buttonstyle"
             android:text="Capture" />
 
         <Button
             android:id="@+id/analyze"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:layout_margin="3dp"
+            android:background="@drawable/buttonstyle"
             android:text="Analyze" />
     </LinearLayout>
 
@@ -94,7 +97,7 @@
         android:id="@+id/moreResults"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Explore relevant results ..." />
+        android:text="Explore relevant results ..."
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </LinearLayout>

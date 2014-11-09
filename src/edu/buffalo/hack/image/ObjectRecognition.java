@@ -14,7 +14,7 @@ public class ObjectRecognition {
 	private final String TAG = "Runner";
 
 
-	public List<ObjectDetails> getObjectDetails(String productName) throws Exception {
+	public ArrayList<ObjectDetails> getObjectDetails(String productName) throws Exception {
 		
 		String xml = "";
 		List<HashMap<String,String>> logoDetails = new ArrayList<HashMap<String,String>>();

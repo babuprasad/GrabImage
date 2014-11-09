@@ -62,7 +62,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 	private String result ="";
 	private ProcessImage processImage = new ProcessImage();
 	private ObjectDetails mFirstObjectDetails = null;
-	private List<ObjectDetails> mObjectDetailsList = null;
+	private ArrayList<ObjectDetails> mObjectDetailsList = null;
+	private ArrayList<ObjectDetails> mAmazonObjDetailsList = null;
 	private TextToSpeech textToSpeech = null;
 
 	public static Camera getCameraObject(){
@@ -247,17 +248,17 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 					public void run() {
 						// TODO Auto-generated method stub
 						try {
-							GoogleResponse googleResponse = new GoogleResponse();
-							ArrayList<ObjectDetails> objectDetailsList = googleResponse.getRelavantItems(result);
+							//GoogleResponse googleResponse = new GoogleResponse();
+							//ArrayList<ObjectDetails> objectDetailsList = googleResponse.getRelavantItems(result);
+							if(mAmazonObjDetailsList == null || (mAmazonObjDetailsList != null && mAmazonObjDetailsList.size() == 0))
+									mAmazonObjDetailsList = new ObjectRecognition().getObjectDetails(result);	
 							addToLogs("search results retrieved.\n");
 							Intent intent = new Intent(getApplicationContext(), ListActivity.class);
-							intent.putParcelableArrayListExtra("objectDetailsList", objectDetailsList);
+							intent.putParcelableArrayListExtra("objectDetailsList", mObjectDetailsList);
+							intent.putParcelableArrayListExtra("amazonObjectList", mAmazonObjDetailsList);
 							startActivity(intent);
-						} catch (HttpException e) {
+						} catch (Exception e) {
 							addToLogs("Error in retrieving results !\n");
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -273,7 +274,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		//cameraObject.release();
+		cameraObject.stopPreview();
 	}
 
 	@Override

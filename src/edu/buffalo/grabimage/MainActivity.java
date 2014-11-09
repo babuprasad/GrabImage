@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.HttpException;
 import edu.buffalo.hack.image.GoogleResponse;
 import edu.buffalo.hack.image.ObjectDetails;
 import edu.buffalo.hack.image.ObjectRecognition;
+import edu.buffalo.hack.image.Ticker;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -64,6 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 	private ObjectDetails mFirstObjectDetails = null;
 	private ArrayList<ObjectDetails> mObjectDetailsList = null;
 	private ArrayList<ObjectDetails> mAmazonObjDetailsList = null;
+	private ArrayList<ObjectDetails> mFinanceObjList = null;
 	private TextToSpeech textToSpeech = null;
 
 	public static Camera getCameraObject(){
@@ -250,12 +252,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 						try {
 							//GoogleResponse googleResponse = new GoogleResponse();
 							//ArrayList<ObjectDetails> objectDetailsList = googleResponse.getRelavantItems(result);
-							if(mAmazonObjDetailsList == null || (mAmazonObjDetailsList != null && mAmazonObjDetailsList.size() == 0))
-									mAmazonObjDetailsList = new ObjectRecognition().getObjectDetails(result);	
+							//if(mAmazonObjDetailsList == null || (mAmazonObjDetailsList != null && mAmazonObjDetailsList.size() == 0))
+							mAmazonObjDetailsList = new ObjectRecognition().getObjectDetails(result);
+							mFinanceObjList = Ticker.getStockDetails(result);
 							addToLogs("search results retrieved.\n");
 							Intent intent = new Intent(getApplicationContext(), ListActivity.class);
 							intent.putParcelableArrayListExtra("objectDetailsList", mObjectDetailsList);
 							intent.putParcelableArrayListExtra("amazonObjectList", mAmazonObjDetailsList);
+							intent.putParcelableArrayListExtra("financeList", mFinanceObjList);
 							startActivity(intent);
 						} catch (Exception e) {
 							addToLogs("Error in retrieving results !\n");

@@ -77,7 +77,7 @@ public class SaxParser {
 		 
 			public void characters(char ch[], int start, int length) throws SAXException {
 		 
-				if(count <5)
+				if(count <2)
 				{
 //					if (bMoreUrl) {
 //						System.out.println("More Url : " + new String(ch, start, length));

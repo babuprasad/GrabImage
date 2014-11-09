@@ -56,8 +56,7 @@
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.18"
+        android:layout_height="60dp"
         android:background="@drawable/solidbackground" >
 
         <TextView
@@ -70,16 +69,16 @@
     <LinearLayout
         android:id="@+id/objectDetails"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/textlines"
+        android:layout_height="66dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp"
+        android:background="@drawable/textlines" >
 
         <ImageView
             android:id="@+id/objectImage"
             android:layout_width="80dp"
             android:layout_height="80dp" />
-<!--             android:src="@drawable/abc_ab_bottom_solid_dark_holo" /> -->
+        <!-- android:src="@drawable/abc_ab_bottom_solid_dark_holo" /> -->
 
         <TextView
             android:id="@+id/objectTitle"
@@ -90,5 +89,12 @@
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/moreResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Explore relevant results ..." />
 
 </LinearLayout>

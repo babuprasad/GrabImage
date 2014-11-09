@@ -16,11 +16,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
+
 public class SaxParser {
 	
-	static ArrayList<String> output = new ArrayList<String>();	
-	static int count = 0;
-	static StringBuilder builder = new StringBuilder();
+	ArrayList<String> output = new ArrayList<String>();	
+	int count = 0;
+	StringBuilder builder = new StringBuilder();
 
 	 public ArrayList<String> getLogoDetails(String input) {
 		 
@@ -108,6 +110,10 @@ public class SaxParser {
 						bsalary = false;
 					}*/
 				}
+				else
+				{
+					throw new SAXException("Object details found !");
+				}
 			}
 		 
 		     };
@@ -116,7 +122,11 @@ public class SaxParser {
 		     //saxParser.parse(new File("test.xml"), handler);
 		     
 		     //saxParser.parse(input, handler);
-		     saxParser.parse(new InputSource(new StringReader(input)), handler);
+		     try {
+				saxParser.parse(new InputSource(new StringReader(input)), handler);
+			} catch (SAXException e) {
+				e.printStackTrace();
+			}
 		     
 		     
 		     for(int i = 0; i < output.size(); i++)

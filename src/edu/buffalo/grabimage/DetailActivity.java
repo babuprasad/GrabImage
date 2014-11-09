@@ -1,6 +1,7 @@
 package edu.buffalo.grabimage;
 
 import android.support.v7.app.ActionBarActivity;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ public class DetailActivity extends ActionBarActivity {
 
 	WebView detailView = null;
 	
+	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

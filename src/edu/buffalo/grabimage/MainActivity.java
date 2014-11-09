@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import org.apache.commons.httpclient.HttpException;
+
+import edu.buffalo.hack.image.GoogleResponse;
 import edu.buffalo.hack.image.ObjectDetails;
 import edu.buffalo.hack.image.ObjectRecognition;
 
@@ -46,6 +50,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 	private Button start;
 	private Button capture;
 	private Button analyze;
+	private Button moreResults;
 	private FrameLayout preview;
 	private TextView logs;
 	private TextView objectTitle;
@@ -53,6 +58,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 
 	final private String TAG = "GrabImage";
 	private String bmpPath = "";
+	private String result ="";
 	private ProcessImage processImage = new ProcessImage();
 	private ObjectDetails mObjectDetails = null;
 	private TextToSpeech textToSpeech = null;
@@ -158,9 +164,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 									} catch (InterruptedException e) {
 										e.printStackTrace();
 									}
-									String result = processImage.processImage(finalUrl);
+									result = processImage.processImage(finalUrl);
 									addToLogs((result != null)?result:"Not recognized. Retrying " +(i+1)+ " ...");
 									if(result != null) {
+										result = result.replaceAll("\\d+\\s*.*", "");
+										textToSpeech.speak(result, TextToSpeech.QUEUE_FLUSH, null);
 										addToLogs("Fetching product details...");
 										try {
 											ObjectRecognition objectDetails = new ObjectRecognition();
@@ -201,8 +209,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 				resetObjectDetails();
 			}
 		});
-		textToSpeech=new TextToSpeech(getApplicationContext(),
-				new TextToSpeech.OnInitListener() {
+		textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
 
 			@Override
 			public void onInit(int status) {
@@ -211,7 +218,37 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 				}				
 			}
 		});
+		moreResults = (Button) findViewById(R.id.moreResults);
+		moreResults.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				logs.append("Generating relevant results...\n");
+				Thread googleRequestThread = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							GoogleResponse googleResponse = new GoogleResponse();
+							ArrayList<ObjectDetails> objectDetailsList = googleResponse.getRelavantItems(result);
+							addToLogs("search results retrieved.\n");
+							Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+							intent.putParcelableArrayListExtra("objectDetailsList", objectDetailsList);
+							startActivity(intent);
+						} catch (HttpException e) {
+							addToLogs("Error in retrieving results !\n");
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+				googleRequestThread.start();
+
+			}
+		});
 	}
 
 
@@ -327,4 +364,5 @@ public class MainActivity extends Activity implements View.OnClickListener, Came
 			}
 		});
 	}
+
 }
